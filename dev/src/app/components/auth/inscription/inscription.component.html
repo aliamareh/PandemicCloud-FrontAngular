@@ -1,0 +1,55 @@
+<script src="inscription.component.ts"></script>
+<div class="container">
+  <h2 class="text-center mt-3">Créer un compte</h2>
+  <form class="w-75 mx-auto" [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <div class="form-group" >
+      <input
+        type="url"
+        formControlName="pseudo"
+        class="form-control"
+        placeholder="pseudo"
+        [class.is-invalid]="submitted && pseudo?.errors"
+      />
+      <div class="invalid-feedback"  *ngIf="submitted && pseudo?.errors">
+        <div *ngIf="pseudo?.getError('required')">Veuillez saisir votre nom d'utilisateur !</div>
+        <div *ngIf="pseudo?.getError('minlength')">3 caractères minimum requis !</div>
+        {{ pseudo?.getError("violation") }}
+      </div>
+    </div>
+    <div class="form-group mt-2">
+      <input
+        type="password"
+        formControlName="password"
+        class="form-control"
+        placeholder="Mot de passe"
+        [class.is-invalid]="submitted && password?.errors"
+      />
+      <div class="invalid-feedback"  *ngIf="submitted && password?.errors">
+        <div *ngIf="password?.getError('required')">Veuillez saisir un mot de passe !</div>
+        <div *ngIf="password?.getError('minlength')">4 caractères (minimum) requis !</div>
+        {{ password?.getError("violation") }}
+      </div>
+    </div>
+    <div class="form-group mt-2">
+      <input
+        type="password"
+        formControlName="plainPassword"
+        class="form-control"
+        placeholder="Confirmation du mot de passe"
+        [class.is-invalid]="submitted && plainPassword?.errors"
+      />
+      <div class="invalid-feedback"  *ngIf="submitted && plainPassword?.errors">
+        {{ plainPassword?.getError("violation") }}
+      </div>
+    </div>
+    <div class="alert alert-danger" *ngIf="error">
+      Erreur serveur, veuillez ré-essayer plus tard.
+    </div>
+    <button type="submit" class="btn btn-warning mt-1">Inscription</button>
+    <div class="text-center justify-content-center">
+      <p> Vous avez déjà un compte ? <a routerLink="/" class="btn btn-link">Se connecter</a></p>
+    </div>
+  </form>
+</div>
+
+

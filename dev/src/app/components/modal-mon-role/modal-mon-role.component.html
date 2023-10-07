@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title">Mon role : <span class="bg-warning">{{infosJoueur.nbActions}} restants</span></h4>
+  <button type="button" class="close btn btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div class="card border-info mb-1">
+      <div class="card-header">Infos joueur</div>
+      <div class="card-body">
+        <h5 class="card-title bg-warning text-center">{{infosJoueur.nomRole}}</h5>
+        <p class="card-text">{{infosJoueur.descRole}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+

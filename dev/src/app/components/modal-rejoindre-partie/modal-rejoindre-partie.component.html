@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title">Rejoindre une partie</h4>
+  <button type="button" class="close btn btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <form [style.display]="!enregistrement ? 'block' : 'none'">
+    <div class="form-group">
+      <label class="control-label">Identifiant partie</label>
+      <input  #idPartie type="number" class="form-control" [value]="" >
+    </div>
+    <div class="alert alert-danger mt-1" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+  </form>
+  <div  *ngIf="enregistrement" class="text-center justify-content-center mt-2">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Connexion...</p>
+  </div>
+</div>
+<div class="modal-footer" [style.display]="!enregistrement ? 'block' : 'none'">
+  <button (click)="onConnexionPartie(idPartie.value)"
+          type="button" class="btn btn-warning mt-1">Rejoindre</button>
+</div>

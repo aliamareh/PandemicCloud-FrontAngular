@@ -1,0 +1,277 @@
+<div *ngIf="ville !== null" [ngClass]="{'bg-primary': ville.maladieParDefaut === 'Bleue',
+                        'bg-danger' : ville.maladieParDefaut === 'Rouge',
+                        'bg-warning': ville.maladieParDefaut === 'Jaune',
+                        'bg-dark': ville.maladieParDefaut === 'Noire'
+                      }" class="modal-header">
+  <h4 class="modal-title text-white">{{ville.nom}} | <span class="bg-secondary">{{infosJoueur.nbActions}} actions restantes</span></h4>
+  <button type="button" class="close btn btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div *ngIf="ville !== null && infosJoueur !== null" class="modal-body">
+  <table class="table table-sm">
+    <thead>
+    <tr>
+      <th scope="col">Centre de recherche</th>
+      <th scope="col">Joueurs</th>
+      <th scope="col">Cubes maladies</th>
+      <th scope="col">Population</th>
+    </tr>
+    </thead>
+    <tbody>
+      <td>{{ville.centreRecherche}}</td>
+      <td *ngIf="ville.joueursDansLaVille.length > 0">{{ville.joueursDansLaVille}}</td>
+      <td *ngIf="ville.joueursDansLaVille.length === 0">Pas de joueurs</td>
+      <td>
+        <span *ngIf="ville.cubesMaladie.Bleue" class="badge bg-primary mx-1">{{ville.cubesMaladie.Bleue}}</span>
+        <span *ngIf="!ville.cubesMaladie.Bleue" class="badge bg-primary mx-1">0</span>
+
+        <span *ngIf="ville.cubesMaladie.Rouge" class="badge bg-danger">{{ville.cubesMaladie.Rouge}}</span>
+        <span *ngIf="!ville.cubesMaladie.Rouge" class="badge bg-danger">0</span>
+
+        <span *ngIf="ville.cubesMaladie.Jaune" class="badge bg-warning mx-1">{{ville.cubesMaladie.Jaune}}</span>
+        <span *ngIf="!ville.cubesMaladie.Jaune" class="badge bg-warning mx-1">0</span>
+
+        <span *ngIf="ville.cubesMaladie.Noire" class="badge bg-dark">{{ville.cubesMaladie.Noire}}</span>
+        <span *ngIf="!ville.cubesMaladie.Noire" class="badge bg-dark">0</span>
+      </td>
+      <td>{{ville.population}}</td>
+    </tbody>
+  </table>
+  <div class="container">
+    <!--    Actions-->
+    <div class="row">
+      <h4 class="modal-title text-center"><span class="bg-warning">Actions normales</span></h4>
+      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" *ngFor="let nomAction of ['Déplacement','Construire','Partage','traiter','decouvrir']" role="presentation">
+          <button [class.active]="option===nomAction"  class="nav-link" (click)="onChangeAction(nomAction)" data-bs-toggle="pill"  type="button" role="tab">{{nomAction}}</button>
+        </li>
+      </ul>
+      <div class="alert alert-danger mt-1" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+      <form *ngIf="option === 'Déplacement'">
+        <div class="mt-1">
+          <p> Type déplacement : <p>
+          <select name="type-dep" [(ngModel)]="typeAction" class="form-control">
+            <option value="VOITUREOUTRANSBORDEUR">Voiture</option>
+            <option value="VOLDIRECT">Vol direct</option>
+            <option value="VOLCHARTEUR">Vol charter</option>
+            <option value="NAVETTE">Navette</option>
+          </select>
+        </div>
+        <button type="button" (click)="onJouerActionSurVille()" class="btn btn-warning mt-1">Se déplacer</button>
+      </form>
+
+      <form *ngIf="option === 'Construire'">
+        <button *ngIf="numberCentreRecherche !== 0" type="button"
+                class="btn btn-warning mt-1" (click)="onJouerActionContruireStationRecrche()">Construire statiton de recherche</button>
+
+        <button *ngIf="numberCentreRecherche !== 0" type="button" (click)="onJouerActionConstruireStationParExpertOpe()"
+                class="btn btn-outline-secondary mx-1 mt-1" >Construire statiton de recherche (Expert. Opé.)</button>
+
+        <div *ngIf="numberCentreRecherche === 0" class="mt-1">
+          <p class="text-danger">Il y'a déjà 6 stations de rechcrches !<p>
+          <p class="mt-1"> Choisir une station de recherche à deplacer vers cette ville : <p>
+          <select name="ville-satation"  [(ngModel)]="villeDestination" class="form-control">
+            <option *ngFor="let ville of listCentreRecherche" value="{{ville}}">{{ville}}</option>
+          </select>
+        </div>
+        <button *ngIf="numberCentreRecherche === 0"
+                (click)="onJouerActionDeplacerStationRecrche()"
+                type="button" class="btn btn-warning mt-1">Deplacer la station de recherche</button>
+
+        <button *ngIf="numberCentreRecherche === 0"  (click)="onJouerActionDeplacerStationParExpertOpe()"
+                type="button" class="btn btn-outline-secondary mx-1 mt-1" >Deplacer statiton de recherche (Expert. Opé.)</button>
+      </form>
+
+      <form *ngIf="option === 'Partage'">
+        <div class="mt-1">
+          <p> Type de partage : <p>
+          <select name="type-partage"  [(ngModel)]="typePartage" class="form-control">
+            <option value="prendre">Prendre</option>
+            <option value="donner">Donner</option>
+          </select>
+
+          <p class="mt-1"> Choisir un joueur : <p>
+          <select name="nom-joueur" [(ngModel)]="joueurCible" class="form-control">
+            <option *ngFor="let j of listeJoueurs" value="{{j}}">{{j}}</option>
+          </select>
+
+          <p class="mt-1"> La position de la carte : <p>
+          <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+            <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+          </select>
+        </div>
+        <button type="button" (click)="onJouerActionPartagerConnaissance()"
+                class="btn btn-warning mt-1">Partager</button>
+      </form>
+
+      <form *ngIf="option === 'traiter' || option === 'decouvrir'" >
+        <p class="mt-1"> Choisir la maladie à {{option}} : <p>
+        <select name="maladie" [(ngModel)]="maladie"  class="form-control" >
+          <option *ngFor="let m of ['Bleue','Rouge','Jaune','Noire']" value="{{m}}">{{m}}</option>
+        </select>
+        <div *ngIf="option === 'decouvrir'">
+          <p class="mt-1"> Les cartes à défausser :  <p>
+          <div  class="form-check form-check-inline" *ngFor="let i of [1,2,3,4,5,6,7]">
+            <input class="form-check-input" (change)="onChangeCarteADefausser(i, $event)" name="{{i}}" value="{{i}}" type="checkbox" id="carte-{{i}}">
+            <label class="form-check-label" for="carte-{{i}}">
+              {{i}}
+            </label>
+          </div>
+        </div>
+
+        <button *ngIf="option === 'traiter'" (click)="onjouerActionTraiterMaladie()"
+                type="button" class="btn btn-warning mt-1">Traiter maladie</button>
+        <button *ngIf="option === 'decouvrir'" (click)="onjouerActionDecouvrirRemedre()"
+                type="button" class="btn btn-warning mt-1">Découvrir remeède</button>
+      </form>
+    </div>
+    <hr>
+    <!--    Evenement-->
+    <div class="row">
+      <h4 class="modal-title text-center"><span class="bg-warning">Cartes évènements</span></h4>
+      <ul class="nav nav-pills mb-3" id="pills-eve" role="tablist">
+        <li class="nav-item" *ngFor="let nomAction of ['Pont aérien','Subvention publique', 'Prévision', 'Par une nuit tranquille','Pop. résiliante']" role="presentation">
+          <button  [class.active]="option===nomAction"  class="nav-link" (click)="onChangeAction(nomAction)" data-bs-toggle="pill"  type="button" role="tab">{{nomAction}}</button>
+        </li>
+      </ul>
+      <form *ngIf="option === 'Pont aérien'">
+        <p class="mt-1"> Choisir le joueur à deplacer vers cette ville : </p>
+        <select name="nom-joueur" [(ngModel)]="joueurCible" class="form-control">
+          <option *ngFor="let j of listeJoueurs" value="{{j}}">{{j}}</option>
+        </select>
+        <p class="mt-1"> La position de la carte : <p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" (click)="onJouerPontAerien()"
+                class="btn btn-warning mt-1">Jouer pont aérien</button>
+      </form>
+
+      <form *ngIf="option === 'Subvention publique'">
+        <p class="mt-1" *ngIf="numberCentreRecherche !== 0" >
+          Construire une station de recherche dans cette ville.<p>
+
+        <p class="mt-1"> La position de la carte : <p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+
+        <div *ngIf="numberCentreRecherche === 0" class="mt-1">
+          <p class="text-danger">Il y'a déjà 6 stations de rechcrches !<p>
+          <p class="mt-1"> Choisir une station de recherche à deplacer vers cette ville : <p>
+          <select name="ville-satation"  [(ngModel)]="villeDestination" class="form-control">
+            <option *ngFor="let ville of listCentreRecherche" value="{{ville}}">{{ville}}</option>
+          </select>
+        </div>
+
+        <button type="button" *ngIf="numberCentreRecherche !== 0"
+                (click)="onJouerSubventionPublique()"
+                class="btn btn-warning mt-1">Jouer subvention publique</button>
+
+        <button *ngIf="numberCentreRecherche === 0"
+                (click)="onJouerSubventionPublique2()"
+                type="button" class="btn btn-warning mt-1">Jouer subvention publique</button>
+
+      </form>
+      <form *ngIf="option === 'Prévision' && phasePrevision === 2">
+        <p class="mt-1"> Cochez les cartes dans l'ordre que vous souhaitez qu'ils soient organiser : <p>
+          <div  class="form-check form-check-inline border-secondary" *ngFor="let carte of cartePrevison">
+            <input class="form-check-input" (change)="onChangeCarteAReorganiser(carte, $event)" name="{{carte.nomVilleOuEvenement}}" value="{{carte.nomVilleOuEvenement}}" type="checkbox" id="carte-{{carte.nomVilleOuEvenement}}">
+            <label class="form-check-label" for="carte-{{carte.nomVilleOuEvenement}}">
+              {{carte.nomVilleOuEvenement}} ({{carte.maladieOuDescr}})
+            </label>
+          </div>
+        <p class="mt-1">Nouvelle réorganisation :
+         <br> <span *ngFor="let c of carteAReorganiser">{{c}}, </span></p>
+
+        <button type="button" (click)="onJouerPrevisionPhase2()" class="btn btn-warning mt-1">Jouer prévision</button>
+      </form>
+
+      <form *ngIf="option === 'Prévision' && phasePrevision === 1">
+        <p class="mt-1"> La position de la carte : <p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" (click)="onJouerPrevisionPhase1()" class="btn btn-warning mt-1">Afficher cartes propagation</button>
+      </form>
+
+      <form *ngIf="option === 'Par une nuit tranquille'">
+        <p class="mt-1"> La position de la carte : </p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" (click)="onJouerParUneNuitTranquille()"
+                class="btn btn-warning mt-1">Jouer par une nuit tranquille</button>
+      </form>
+
+      <form *ngIf="option === 'Pop. résiliante'">
+        <p class="mt-1"> La position de la carte evenement : </p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+
+        <p class="mt-1"> La position de la carte propgation : </p>
+        <select name="carte-index" [(ngModel)]="cartePropARetirer" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" (click)="onJouerPopResil()"
+                class="btn btn-warning mt-1">Jouer population résiliante</button>
+      </form>
+    </div>
+    <hr>
+    <!--    Roles-->
+    <div class="row">
+      <h4 class="modal-title text-center"><span class="bg-warning">Role</span></h4>
+      <ul class="nav nav-pills mb-3" id="pills-role" role="tablist">
+        <li class="nav-item" *ngFor="let nomAction of ['Déplacer joueur','Déplacer joueur vers joueur', 'Stat. recherche vers ville','Prendre carte évenement']" role="presentation">
+          <button  [class.active]="option===nomAction"  class="nav-link" (click)="onChangeAction(nomAction)" data-bs-toggle="pill"  type="button" role="tab">{{nomAction}}</button>
+        </li>
+      </ul>
+      <form *ngIf="option === 'Déplacer joueur'">
+        <div class="mt-1">
+          <p class="mt-1"> Choisir le joueur à deplacer vers cette ville : </p>
+          <select name="nom-joueur" [(ngModel)]="joueurCible" class="form-control">
+            <option *ngFor="let j of listeJoueurs" value="{{j}}">{{j}}</option>
+          </select>
+          <p> Type déplacement : <p>
+          <select name="type-dep" [(ngModel)]="typeAction" class="form-control">
+            <option value="VOITUREOUTRANSBORDEUR">Voiture</option>
+            <option value="VOLDIRECT">Vol direct</option>
+            <option value="VOLCHARTEUR">Vol charter</option>
+            <option value="NAVETTE">Navette</option>
+          </select>
+        </div>
+        <button type="button" (click)="onJouerDeplacerPionJoueur()" class="btn btn-warning mt-1">Déplacer</button>
+      </form>
+
+      <form *ngIf="option === 'Déplacer joueur vers joueur'">
+        <div class="mt-1">
+          <p class="mt-1"> Choisir le joueur qui vas rejoindre le/les joueur(s) dans cette ville : </p>
+          <select name="nom-joueur" [(ngModel)]="joueurCible" class="form-control">
+            <option *ngFor="let j of listeJoueurs" value="{{j}}">{{j}}</option>
+          </select>
+        </div>
+        <button type="button" (click)="onJouerDeplacerPionVersJoueur()" class="btn btn-warning mt-1">Déplacer</button>
+      </form>
+
+      <form *ngIf="option === 'Stat. recherche vers ville'">
+        <p class="mt-1"> La position de la carte à déffausser : <p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" (click)="onJouerActionStationVersVilleExpertOpe()" class="btn btn-warning mt-1">Défausser carte et se déplacer vers cette ville</button>
+      </form>
+
+      <form *ngIf="option === 'Prendre carte évenement'">
+        <p class="mt-1"> La position de la carte évenement : <p>
+        <select name="carte-index" [(ngModel)]="carteAPrendre" class="form-control" >
+          <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" value="{{i}}">{{i}}</option>
+        </select>
+        <button type="button" class="btn btn-warning mt-1">Prendre</button>
+      </form>
+
+    </div>
+  </div>
+</div>

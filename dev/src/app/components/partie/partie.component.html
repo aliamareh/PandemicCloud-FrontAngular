@@ -1,0 +1,211 @@
+<div *ngIf="etatPartieLoaded" class="container toggle-content">
+    <div class="text-center m-2" *ngIf="etatPartie.etat === 1">
+      <button (click)="onQuittezPartie()" class="btn btn-outline-danger mx-3">Quittez partie
+      </button>
+    </div>
+
+  <div  class="container d-flex justify-content-center">
+    <div class="row" style="position:absolute;">
+
+      <div class="col">
+        <div class="card border-success bg-opacity-10" style="width: 15rem">
+          <div class="card-header text-center">Carte joueur</div>
+          <div class="card-body p-0 justify-content-center text-center">
+            <img src="assets/img/carte_propagation.png" style="width: 70px">
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card border-success bg-opacity-10" style="width: 15rem">
+          <div class="card-header text-center">Défausse joueur
+            <button *ngIf="dernierCarteJoueur"  type="button"
+                    class="btn text-white btn-secondary btn-sm"
+                    (click)="openDefausseJoueur()">info</button>
+          </div>
+          <div class="card-body p-0">
+            <div *ngIf="dernierCarteJoueur" class="card border-dark text-white text-center p-3 "
+                 [ngClass]="{'bg-primary ': dernierCarteJoueur.maladieOuDescr === 'Bleue',
+                        'bg-danger ' : dernierCarteJoueur.maladieOuDescr === 'Rouge',
+                        'bg-warning ': dernierCarteJoueur.maladieOuDescr === 'Jaune',
+                        'bg-dark ': dernierCarteJoueur.maladieOuDescr === 'Noire',
+                         'bg-secondary ': dernierCarteJoueur.maladieOuDescr === 'epidemie'
+                      }">
+              <blockquote class="blockquote card-body">
+                <p [ngClass]="{'text-dark' : dernierCarteJoueur.typeCarte === 'evenement' }">{{dernierCarteJoueur.nomVilleOuEvenement }}</p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card border-info bg-transparent" style="width: 15rem">
+          <div class="card-header text-center">Carte propagation</div>
+          <div class="card-body p-0 justify-content-center text-center">
+            <img src="assets/img/carte_propagation.png" style="width: 70px">
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card border-info  bg-transparent" style="width: 15rem">
+          <div class="card-header text-center">Défausse propagation
+            <button type="button" class="btn text-white btn-secondary btn-sm" (click)="openDefausseProp()">info</button>
+          </div>
+          <div class="card-body p-0">
+            <div *ngIf="dernierCarteProp" class="card border-dark text-white text-center p-3 "
+                 [ngClass]="{'bg-primary ': dernierCarteProp.maladieOuDescr === 'Bleue',
+                        'bg-danger ' : dernierCarteProp.maladieOuDescr === 'Rouge',
+                        'bg-warning ': dernierCarteProp.maladieOuDescr === 'Jaune',
+                        'bg-dark ': dernierCarteProp.maladieOuDescr === 'Noire'
+                      }">
+              <blockquote class="blockquote card-body">
+                <p>{{dernierCarteProp.nomVilleOuEvenement }}</p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container d-flex justify-content-center">
+
+      <img src="assets/img/carte.png" style="width: 1132px;height: 616px" usemap="#image-map">
+
+      <map name="image-map">
+        <!-- Villes jaunes -->
+        <area (click)="openVilleInfos('Los Angeles')" id="Los Angeles" alt="Los Angeles" coords="226,300,13" shape="circle">
+        <area (click)="openVilleInfos('Santiago')" id="Santiago" alt="Santiago" coords="331,469,13" shape="circle">
+        <area (click)="openVilleInfos('Mexico')" id="Mexico" alt="Mexico" coords="284,317,11" shape="circle">
+        <area (click)="openVilleInfos('Lima')" id="Lima" alt="Lima" coords="327,418,11" shape="circle">
+        <area (click)="openVilleInfos('Buenos Aires')" id="Buenos Aires" alt="Buenos Aires" coords="399,457,11" shape="circle">
+        <area (click)="openVilleInfos('Bogotá')" id="Bogotá" alt="Bogotá" coords="356,369,12" shape="circle">
+        <area (click)="openVilleInfos('Miami')" id="Miami" alt="Miami" coords="354,319,11" shape="circle">
+        <area (click)="openVilleInfos('São Paulo')" id="São Paulo" alt="São Paulo" coords="432,431,14" shape="circle">
+        <area (click)="openVilleInfos('Lagos')" id="Lagos" alt="Lagos" coords="553,350,14" shape="circle">
+        <area (click)="openVilleInfos('Kinshasa')" id="Kinshasa" alt="Kinshasa" coords="596,398,13" shape="circle">
+        <area (click)="openVilleInfos('Khartoum')" id="Khartoum" alt="Khartoum" coords="628,350,11" shape="circle">
+        <area (click)="openVilleInfos('Johannesburg')" id="Johannesburg" alt="Johannesburg" coords="629,449,14" shape="circle">
+
+        <!-- villes bleu-->
+        <area (click)="openVilleInfos('San Francisco')" id="San Francisco" alt="San Francisco" coords="227,247,13" shape="circle">
+        <area (click)="openVilleInfos('Chicago')" id="Chicago" alt="Chicago" coords="298,225,13" shape="circle">
+        <area (click)="openVilleInfos('Atlanta')" id="Atlanta" alt="Atlanta" coords="318,272,11" shape="circle">
+        <area (click)="openVilleInfos('Montreal')" id="Montreal" alt="Montreal" coords="361,215,11" shape="circle">
+        <area (click)="openVilleInfos('Washington')" id="Washington" alt="Washington" coords="380,273,10" shape="circle">
+        <area (click)="openVilleInfos('New-York')" id="New-York" alt="New-York" coords="402,235,12" shape="circle">
+        <area (click)="openVilleInfos('Paris')" id="Paris" alt="Paris" coords="567,234,10" shape="circle">
+        <area (click)="openVilleInfos('Madrid')" id="Madrid" alt="Madrid" coords="509,263,11" shape="circle">
+        <area (click)="openVilleInfos('Londres')" id="Londres" alt="Londres" coords="518,209,14" shape="circle">
+        <area (click)="openVilleInfos('Essen')" id="Essen" alt="Essen" coords="587,192,11" shape="circle">
+        <area (click)="openVilleInfos('Milan')" id="Milan" alt="Milan" coords="611,227,12" shape="circle">
+        <area (click)="openVilleInfos('Saint-Pétersbourg')" id="Saint-Pétersbourg" alt="Saint-Pétersbourg" coords="647,185,12" shape="circle">
+
+        <!-- Villes noires -->
+        <area (click)="openVilleInfos('Alger')" id="Alger" alt="Alger" coords="571,288,13" shape="circle">
+        <area (click)="openVilleInfos('Le Caire')" id="Le Caire" alt="Le Caire" coords="619,297,13" shape="circle">
+        <area (click)="openVilleInfos('Istanbul')" id="Istanbul" alt="Istanbul" coords="628,253,11" shape="circle">
+        <area (click)="openVilleInfos('Moscou')" id="Moscou" alt="Moscou" coords="678,225,11" shape="circle">
+        <area (click)="openVilleInfos('Bagdad')" id="Bagdad" alt="Bagdad" coords="669,271,12" shape="circle">
+        <area (click)="openVilleInfos('Riyad')" id="Riyad" alt="Riyad" coords="675,316,12" shape="circle">
+        <area (click)="openVilleInfos('Karachi')" id="Karachi" alt="Karachi" coords="738,293,11" shape="circle">
+        <area (click)="openVilleInfos('Téhéran')" id="Téhéran" alt="Téhéran" coords="728,245,13" shape="circle">
+        <area (click)="openVilleInfos('Delhi')" id="Delhi" alt="Delhi" coords="780,269,13" shape="circle">
+        <area (click)="openVilleInfos('Mumbai')" id="Mumbai" alt="Mumbai" coords="738,340,11" shape="circle">
+        <area (click)="openVilleInfos('Chennai')" id="Chennai" alt="Chennai" coords="786,353,12" shape="circle">
+        <area (click)="openVilleInfos('Calcutta')" id="Calcutta" alt="Calcutta" coords="816,291,12" shape="circle">
+
+        <!-- Villes rouges -->
+        <area (click)="openVilleInfos('Bangkok')" id="Bangkok" alt="Bangkok" coords="832,335,13" shape="circle">
+        <area (click)="openVilleInfos('Pékin')" id="Pékin" alt="Pékin" coords="836,226,12" shape="circle">
+        <area (click)="openVilleInfos('Shanghai')" id="Shanghai" alt="Shanghai" coords="846,261,11" shape="circle">
+        <area (click)="openVilleInfos('Hong-Kong')" id="Hong-Kong" alt="Hong-Kong" coords="854,307,11" shape="circle">
+        <area (click)="openVilleInfos('Jakarta')" id="Jakarta" alt="Jakarta" coords="832,415,12" shape="circle">
+        <area (click)="openVilleInfos('Hô-Chi-Minh-Ville')" id="Hô-Chi-Minh-Ville" alt="Hô-Chi-Minh-Ville" coords="870,367,13" shape="circle">
+        <area (click)="openVilleInfos('Taipei')" id="Taipei" alt="Taipei" coords="912,313,12" shape="circle">
+        <area (click)="openVilleInfos('Séoul')" id="Séoul" alt="Séoul" coords="905,218,13" shape="circle">
+        <area (click)="openVilleInfos('Tokyo')" id="Tokyo" alt="Tokyo" coords="950,254,13" shape="circle">
+        <area (click)="openVilleInfos('Osaka')" id="Osaka" alt="Osaka" coords="978,295,11" shape="circle">
+        <area (click)="openVilleInfos('Sydney')" id="Sydney" alt="Sydney" coords="958,469,12" shape="circle">
+        <area (click)="openVilleInfos('Manille')" id="Manille" alt="Manille" coords="922,364,12" shape="circle">
+      </map>
+  </div>
+
+  <div *ngIf="etatPartie.etat === 1" class="container d-flex justify-content-center mt-1 align-content-center">
+      <span *ngIf="pseudo === etatPartie.jc" class="badge bg-success mx-1">
+        <strong>{{pseudo}}</strong>, c'est à vous de jouer<br> Localisation : {{emplacementJc}} </span>
+    <span *ngIf="pseudo !== etatPartie.jc" class="badge bg-secondary mx-1">C'est au tours de <strong>{{etatPartie.jc}}</strong> de jouer </span>
+     <button type="button" class="btn text-white btn-info mx-1" (click)="openMesCartes()">Mes cartes</button>
+     <button type="button" class="btn btn-success" (click)="openMesAction()">Mon role</button>
+  </div>
+  <div class="alert alert-secondary mt-1" *ngIf="etatPartie.etat === 2">
+    Cette partie est terminée
+    <button routerLink="/accueil" class="btn btn-outline-success mx-3" >Retour accueil</button>
+  </div>
+  <div class="container d-flex justify-content-center mt-2">
+
+    <div style="border: 1px grey solid">
+      <span class="badge bg-secondary">Propagation</span> :
+      <div class="btn-group" role="group" aria-label="First group">
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 0 ? 'btn-secondary' : 'btn-light'"
+                class="btn rounded-circle">2</button>
+
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 1 ? 'btn-secondary' : 'btn-light'"
+                class="btn rounded-circle">2</button>
+
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 2 ? 'btn-secondary' : 'btn-light'"
+                class="btn rounded-circle">2</button>
+
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 3 ? 'btn-warning' : 'btn-light'"
+                class="btn  rounded-circle">3</button>
+
+        <button type="button"  [ngClass]="etatPartie.nvPropagation == 4 ? 'btn-warning' : 'btn-light'"
+                class="btn btn-light rounded-circle">3</button>
+
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 5 ? 'btn-danger' : 'btn-light'"
+                class="btn btn-light rounded-circle">4</button>
+        <button type="button" [ngClass]="etatPartie.nvPropagation == 6 ? 'btn-danger' : 'btn-light'"
+                class="btn btn-light rounded-circle">4</button>
+      </div>
+    </div>
+
+    <div class="eclosion mx-1" style="border: 1px grey solid">
+      <span class="badge bg-danger">Éclosion : {{etatPartie.eclosion}}</span>
+    </div>
+
+    <div class="centre-recherche mx-1" style="border: 1px grey solid">
+      <span class="badge bg-black" >Centres de recherches restants : {{6-etatPartie.centreRecherche.length}}</span>
+    </div>
+
+    <div class="cubes-maladie mx-1" style="border: 1px grey solid">
+      <span class="badge bg-primary mx-1">{{etatPartie.cubesMaladie.Bleue}}</span>
+      <span class="badge bg-danger">{{etatPartie.cubesMaladie.Rouge}}</span>
+      <span class="badge bg-warning mx-1">{{etatPartie.cubesMaladie.Jaune}}</span>
+      <span class="badge bg-dark">{{etatPartie.cubesMaladie.Noire}}</span>
+    </div>
+
+    <div class="maladie-eradique" style="border: 1px grey solid">
+      <span *ngFor="let m of etatPartie.eradique"
+            [ngClass]="{'bg-primary': m === 'Bleue',
+                        'bg-danger' : m === 'Rouge',
+                        'bg-warning':m === 'Jaune',
+                        'bg-dark':m === 'Noire'
+                      }"
+            class="badge mx-1">guéri</span>
+
+      <span *ngFor="let m of etatPartie.gueri"
+            [ngClass]="{'bg-primary': m === 'Bleue',
+                        'bg-danger' : m === 'Rouge',
+                        'bg-warning':m === 'Jaune',
+                        'bg-dark':m === 'Noire'
+                      }" class="badge">éradiquée</span>
+    </div>
+  </div>
+</div>
+
+<div  *ngIf="!etatPartieLoaded" class="text-center justify-content-center mt-5">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p>Chargement de la partie...</p>
+</div>

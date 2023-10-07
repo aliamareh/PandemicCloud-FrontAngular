@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+
+  web-app:
+    build: ./         # Chemin vers le Dockerfile
+    ports:
+      - "4200:80"             # Mapping de ports
+
+      
+      

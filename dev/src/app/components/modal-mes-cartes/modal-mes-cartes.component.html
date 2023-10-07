@@ -1,0 +1,31 @@
+<div class="modal-header" xmlns="http://www.w3.org/1999/html">
+  <h4 class="modal-title">{{titre}}</h4>
+  <button type="button" class="close btn btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body" style="overflow-y: auto; height: 27em" >
+  <div class="alert alert-danger mt-1" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+  <div *ngFor="let carte of cartes"
+       [ngClass]="{'bg-primary ': carte.maladieOuDescr === 'Bleue',
+                        'bg-danger ' : carte.maladieOuDescr === 'Rouge',
+                        'bg-warning ': carte.maladieOuDescr === 'Jaune',
+                        'bg-dark ': carte.maladieOuDescr === 'Noire',
+                        'border-dark': carte.typeCarte === 'evenement',
+                        'text-dark': carte.typeCarte === 'evenement',
+                        'text-white': carte.typeCarte !== 'evenement',
+                        'bg-secondary ': carte.typeCarte === 'epidemie'
+                      }"
+
+       class="card bg-primary mb-1">
+    <div *ngIf="carte.typeCarte === 'evenement'" class="card-header">Evenement</div>
+    <div class="card-body">
+      <h5 [ngClass]="{'text-dark' : carte.typeCarte === 'evenement',
+          'text-white' : carte.typeCarte !== 'evenement' }"
+          class="card-title my-auto mx-auto">{{carte.nomVilleOuEvenement}}
+        <button *ngIf="titre === 'Mes cartes'" class="float-end btn btn-secondary" id="{{carte.nomVilleOuEvenement}}" (click)="onDefausserCarte($event)">Défausser</button></h5>
+      <p  *ngIf="carte.typeCarte === 'evenement'" class="card-text">{{carte.maladieOuDescr}}</p>
+    </div>
+  </div>
+</div>

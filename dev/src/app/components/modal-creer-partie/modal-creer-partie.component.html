@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title">Creer une partie</h4>
+  <button type="button" class="close btn btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <div class="alert alert-danger mt-1" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+  <form [style.display]="!enregistrement && !created ? 'block' : 'none'">
+    <div class="mt-1">
+      <p> Veuillez saisir le nombre de joueurs : <p>
+      <select name="nb-oueurs" id="nb-joueurs" [(ngModel)]="nbJoueurs" class="form-control">
+        <option value="2">2 joueurs </option>
+        <option value="3">3 joueurs</option>
+        <option  value="4">4 joueurs</option>
+      </select>
+    </div>
+  </form>
+  <div  *ngIf="enregistrement" class="text-center justify-content-center mt-2">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Creation partie ...</p>
+  </div>
+
+  <div  *ngIf="!enregistrement && created && !errorMessage" class="text-center justify-content-center mt-2">
+    <div class="alert alert-success" role="alert">
+      Partie n°{{idPartie}} a été crée.
+    </div>
+    <button type="button" (click)="onRejoindrePartie()" class="btn btn-warning mt-1">Rejoindre</button>
+  </div>
+
+</div>
+<div class="modal-footer" [style.display]="!enregistrement && !created ? 'block' : 'none'">
+  <button type="button" (click)="onCreatePartie()" class="btn btn-warning mt-1">Creer partie</button>
+</div>
